@@ -16,7 +16,8 @@ pragma solidity ^0.4.17;
   return(owners[_address].name,owners[_address].is_manufacturer,owners[_address].ph_no,owners[_address].mail);
  }
 
- function createUser(address _address ,string _name,bool _man, uint _pno,string _mail) public{
+ function createUser(string _name,bool _man, uint _pno,string _mail) public{
+   address _address=msg.sender;
     require(owners[_address].ph_no==0);
      var p=owners[_address];
      p.name=_name;
@@ -26,11 +27,12 @@ pragma solidity ^0.4.17;
      ownership.push(_address);
 
  }
- function verify(address _address) public view{
-  require(owners[_address].ph_no!=0);
+ function verify() public view{
+  require(owners[msg.sender].ph_no!=0);
 
  }
- function checkman(address _address) public view returns(bool){
+ function checkMan() public view returns(bool){
+   address _address=msg.sender;
      verify(_address);
      return owners[_address].is_manufacturer;
  }
@@ -53,11 +55,11 @@ pragma solidity ^0.4.17;
      delete owners[msg.sender].owns[i];
      owners[rec].owns.push(_padd);
  }
- function createasset(address _address) public {
+ function createAsset(address _address) public {
      require(owners[msg.sender].is_manufacturer);
      owners[msg.sender].owns.push(_address);
  }
- function getowns() public view returns(address[]){
+ function getOwns() public view returns(address[]){
      return owners[msg.sender].owns;
  }
 }
