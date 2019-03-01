@@ -1,0 +1,32 @@
+
+
+
+h2{
+    font-family: 'Poppins', sans-serif;
+  }
+  .signupForm {
+    width: 100%;
+    padding: 30px 0;
+    background: rgba(43, 117, 59, 0.8);
+    transition: .2s;
+  }
+  .signupForm h2 {
+    font-weight: 300;
+    text-align: center;
+  }
+    
+  .noBullet {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .Image {max-width: 80% }
+  
+  div.col-sm-12
+  {
+    text-align: center;
+  }
+
+ul{
+  list-style-type: none;
+}
