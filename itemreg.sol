@@ -56,6 +56,7 @@ contract items{
        //for current   addresss
        function assign_parid(address curaddress,address paradd) public {
            if(assetlist[curaddress].parid==address(0)){
+             assetlist[curaddress].is_batched=true;
            assetlist[curaddress].parid=paradd;
            }
        }
