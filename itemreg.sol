@@ -36,10 +36,10 @@ contract items{
             a.date=_date;
             a.expd=_expd;
             //a.parid=0;
-            a.dis=true;
-            a.state.push(msg.sender);
+            a.dis=false;
+           // a.state.push(msg.sender);
             itemCount=itemCount+1;
-            assetarray.push(_address);
+           assetarray.push(_address);
           }
           else{
             //var a=assetlist[_address];
@@ -77,7 +77,7 @@ contract items{
 
 
     // for disintegated parent
-     function getCurid(address _id) private  returns(address){
+     function getCurid(address _id) public  returns(address){
         if(!checkDiscard(_id))
          {
              assetlist[_id].dis=true;
@@ -119,6 +119,7 @@ contract items{
                     }
                 }
                //transact only if the parent is discarded and the current is not
+               if((assetlist[id].parid==0||assetlist[assetlist[id].parid].dis)&&!assetlist[id].dis)
                   assetlist[id].state.push(receiver);
                   return "Successfully transacted";
 
@@ -126,16 +127,24 @@ contract items{
             }
             function track(address _address) public  returns (address[]){
                 delete tr;
-
+                uint i;
                while(assetlist[_address].parid!=address(0))
                {
-                 for(uint i=assetlist[_address].state.length-1;i>=0;i--)
+                   i=assetlist[_address].state.length;
+                 for(i=i;i>0;i--)
                  {
-                     tr.push(assetlist[_address].state[i]);
+                     tr.push(assetlist[_address].state[i-1]);
 
                  }
+
                  _address=assetlist[_address].parid;
                }
+                i=assetlist[_address].state.length;
+                 for(i=i;i>0;i--)
+                 {
+                     tr.push(assetlist[_address].state[i-1]);
+
+                 }
                return tr;
 
             }
