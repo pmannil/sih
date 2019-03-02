@@ -121,8 +121,12 @@ contract items{
                 }
                //transact only if the parent is discarded and the current is not
                if((assetlist[id].parid==0||assetlist[assetlist[id].parid].dis)&&!assetlist[id].dis)
-                  assetlist[id].state.push(receiver);
-                  return "Successfully transacted";
+               {
+                 assetlist[id].state.push(receiver);
+                 return "Successfully transacted";
+               }
+               else
+               return "Parent already disintegrated";
 
                 //return "Alert!";
             }
