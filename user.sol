@@ -13,6 +13,7 @@ pragma solidity ^0.4.17;
   address [] public ownership;
 
  function getdetails(address _address) public view returns(string,bool,uint,string){
+   verify();
   return(owners[_address].name,owners[_address].is_manufacturer,owners[_address].ph_no,owners[_address].mail);
  }
 
@@ -39,6 +40,7 @@ pragma solidity ^0.4.17;
 
  function get(address _address,address _padd) private view returns(uint){
      uint i;
+     verify();
      for(i=0;i<owners[_address].owns.length;i++){
          if(owners[_address].owns[i]==_padd){
              return i;

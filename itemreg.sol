@@ -3,6 +3,8 @@ pragma solidity ^0.4.17;
 contract items{
     uint public itemCount;
     address[] public tr;
+    string public message;
+    address public addr;
 
     function items() public{
         itemCount=1000;
@@ -25,6 +27,7 @@ contract items{
 
         function createAsset(bool _ispacket,string _name,uint32 _weight,uint32 _date,uint32 _expd) public returns (address){
            address _address=address(itemCount);
+           addr=_address;
            require(assetlist[_address].date==0);
           var a=assetlist[_address];
           itemCount+=10;
@@ -78,7 +81,7 @@ contract items{
 
 
     // for disintegated parent
-     function getCurid(address _id) public  returns(address){
+     function getCurid(address _id) private  returns(address){
         if(!checkDiscard(_id))
          {
              assetlist[_id].dis=true;
@@ -86,7 +89,7 @@ contract items{
         return assetlist[_id].state[assetlist[_id].state.length-1];
      }
      //for current asset
-     function checkOwnership(address _id) public returns(address){
+     function checkOwnership(address _id) private returns(address){
          verify(_id);
          if(assetlist[_id].parid==address(0))
          {
@@ -107,30 +110,30 @@ contract items{
                 return true;
             }
 
-            function transact(address receiver,address id,uint _date) public returns(string){
+            function transact(address receiver,address id,uint _date) public {
                 verify(id);
                 require(_date<assetlist[id].expd);
                 address curr_own=checkOwnership(id);
                 if(curr_own!=msg.sender){
                     if(assetlist[id].state.length==0){
-                       return "Security Alert!";//Error if not the owner
+                       message= "Security Alert!";//Error if not the owner
                     }
                 else{
-                    return "Not the owner";
+                    message= "Not the owner";
                     }
                 }
                //transact only if the parent is discarded and the current is not
                if((assetlist[id].parid==0||assetlist[assetlist[id].parid].dis)&&!assetlist[id].dis)
                {
                  assetlist[id].state.push(receiver);
-                 return "Successfully transacted";
+                 message= "Successfully transacted";
                }
                else
-               return "Parent already disintegrated";
+               message ="Parent already disintegrated";
 
                 //return "Alert!";
             }
-            function track(address _address) public  returns (address[]){
+            function track(address _address) public returns (address[]){
                 delete tr;
                 uint i;
                while(assetlist[_address].parid!=address(0))
@@ -163,5 +166,14 @@ contract items{
             }
             function finalize(address _address) public {
               assetlist[_address].state.push(msg.sender);
+            }
+            function trackChain() public view returns(address[]){
+                return tr;
+            }
+            function createBatch(address[] a,address par) public {
+                uint i=0;
+                for(i=0;i<a.length;i++){
+                    assign_parid(a[i],par);
+                }
             }
     }

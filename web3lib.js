@@ -48,7 +48,7 @@ function transact( address, product,date) {
             item.methods.transact(address, product,date).send({
                 from: account
             }).then((d) => {
-                    res(true);
+              item.methods.message().call().then((msg)=>msg).catch((err) => rej("");
             }).catch((err) => rej(fillErr(err)));
         })
     });
@@ -60,7 +60,9 @@ function produceItem(isPacket, isFinal, name, weight, date, exp) {
 
         item.methods.createAsset(...arguments).send({from:account}).then((d) => {
             return user.methods.createAsset(d).send({from:account})
-        }).then((d) => res(true)).catch((err) => rej(fillErr(err)));
+        }).then((d) => {
+          res(item.methods.addr().call().catch((err) => rej(""));
+        }.catch((err) => rej(fillErr(err)));
     });
 }
 
@@ -98,13 +100,14 @@ function searchProduct(prod){
 function createBatch(arr,isFinal){
     return new Promise((res,rej)=>{
         produceItem(false,true, name, weight, date, exp).then((d)=>{
-            arr.forEach(async (data)=>{
-                try{
-               await item.methods.assign_parid(data,d).send({from:account});
-                }catch(err){
-                    rej(fillErr(err));
-                }
-            });
+          await item.methods.batch(arr,d).then(res=>res(true)).catch("");
+            // arr.forEach(async (data)=>{
+            //     try{
+            //    await item.methods.assign_parid(data,d).send({from:account});
+            //     }catch(err){
+            //         rej(fillErr(err));
+            //     }
+            // });
             res(true);
         }).catch(err=> rej(fillErr(err)));
     });
@@ -129,13 +132,13 @@ function finalize(arr){
 function track(address){
     return new Promise((res,rej)=>{
         var result=[];
-    item.methods.track(address).call().then((data)=>{
+    item.methods.track(address).call().then(()=>{
+      item.methods.trackChain().then((data)=>{
         data.forEach(async (d)=>{
            result.push(await getUserInfo(d));
-        });
-        res(result);
+      })}).catch("");
     }).catch(err=> rej(fillErr(err)));
-
+        res(result);
     });
 }
 
